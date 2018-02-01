@@ -70,9 +70,9 @@ public class TrentinoSkiBot extends TelegramLongPollingBot {
 		SendMessage message;
 		switch (update.getMessage().getText()) {
 		    case "/start":
-			message = dm.start(chatId);
-		    execute(message);
-		    break;
+				message = dm.start(chatId);
+			    execute(message);
+			    break;
 		    
 			case "/help": break;
 			case "/forget": break;
@@ -97,19 +97,20 @@ public class TrentinoSkiBot extends TelegramLongPollingBot {
     	// Set variables
         String call_data = update.getCallbackQuery().getData();
         long message_id = update.getCallbackQuery().getMessage().getMessageId();
-        long chat_id = update.getCallbackQuery().getMessage().getChatId();
+        long chatId = update.getCallbackQuery().getMessage().getChatId();
         
-        if (call_data.startsWith("START_PREF")) {
+        if (call_data.startsWith("START")) {
         	String answer = new String(call_data.getBytes());
         	logger.info("answer: " + answer);
-        	System.out.println("logged");
-//                String answer = "Updated message text";
             EditMessageText new_message = new EditMessageText()
-                    .setChatId(chat_id)
+                    .setChatId(chatId)
                     .setMessageId(toIntExact(message_id))
                     .setText(answer);
-            
             execute(new_message);
+        } else if (call_data.startsWith("HELP")) {
+        	
+        } else if (call_data.startsWith("FINISH")){
+        	dm.finishDialogFlow(chatId);
         }
 	}
 	
