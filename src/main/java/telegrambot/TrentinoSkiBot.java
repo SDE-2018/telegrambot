@@ -31,19 +31,18 @@ public class TrentinoSkiBot extends TelegramLongPollingBot {
 	
 	private static DialogManager dm = new DialogManager();
 	
+	private static String[] supportedCommands = DialogManager.getSupportedCommands();
+	
 	static {
 		Properties properties = new Properties();
         try {
 			properties.load(new FileInputStream("local.properties"));
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
         BOT_TOKEN = properties.getProperty("BOT_TOKEN");
-        
 	}
 	
 	static {
@@ -65,32 +64,22 @@ public class TrentinoSkiBot extends TelegramLongPollingBot {
 	}
 	
 	private void handleInputMessage(Update update) throws TelegramApiException {
-		String message_text = update.getMessage().getText();
+//		String message_text = update.getMessage().getText();
 		long chatId = update.getMessage().getChatId();
 		SendMessage message;
-		switch (update.getMessage().getText()) {
-		    case "/start":
-				message = dm.start(chatId);
+		String text = update.getMessage().getText();
+		logger.info(supportedCommands.toString());
+		for (String c: supportedCommands) {
+			logger.info(text);
+			if (c.equals(text)) {
+				message = dm.startCommandFlow(chatId, c);
 			    execute(message);
-			    break;
-		    
-			case "/help": break;
-			case "/forget": break;
-			case "/stop": break;
-			
-			case "/preferences": break;
-			case "/recommend": break;
-			case "/search_resort": break;
-			case "/add_resort": break;
-			case "/update_resort": break;
-			case "/remove_resort": break;
-			
-			// other message:
-		    default:
-		    	message = dm.continueDialog(chatId, update);
-		    	execute(message);
-		    	break; 
-		}       
+			    return;
+			}
+		}
+		// other message:
+    	message = dm.continueDialog(chatId, update);
+    	execute(message);
 	}
 	
 	private void handleCallback(Update update) throws TelegramApiException {

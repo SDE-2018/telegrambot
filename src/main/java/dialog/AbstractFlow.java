@@ -5,7 +5,13 @@ import javax.ws.rs.NotSupportedException;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Update;
 
-public class AbstractFlow implements DialogFlow {
+
+/**
+ * AbstractFlow containing common fields for all dialog flows.
+ * @author ivan
+ *
+ */
+public abstract class AbstractFlow implements DialogFlow {
 
 	/**
 	 * The id of the chat the flow is engaged now.
@@ -19,6 +25,7 @@ public class AbstractFlow implements DialogFlow {
 	 */
 	protected int currentStep;
 	
+	protected boolean isFinished;
 	
 	public AbstractFlow(long chatId) {
 		this.chatId = chatId;
@@ -26,15 +33,20 @@ public class AbstractFlow implements DialogFlow {
 
 	@Override
 	public SendMessage initFlow() {
-		// TODO Auto-generated method stub
+		// Auto-generated method stub
 		throw new NotSupportedException();
 	}
 
 	@Override
 	public SendMessage continueFlow(Update updates) {
-		// TODO Auto-generated method stub
+		// Auto-generated method stub
 		throw new NotSupportedException();
 	}
-	
 
+	@Override
+	public boolean isFinished() {
+		return isFinished;
+	}
+	
+	
 }
