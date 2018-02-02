@@ -26,7 +26,7 @@ import soap.ws.*;
  * StartFlow manages the dialog flow of the command '/start'.
  * The flow looks like this:
  * Init: 
- * 		Greet a user and ask a name. (open question)
+ * 		0. Greet a user and ask a name. (open question)
  * Continue:
  * 		1. Ask for age. (open question)
  * 		2. Ask what he/she is doing in Trentino. (open question)
@@ -39,7 +39,7 @@ import soap.ws.*;
  */
 public class StartFlow extends AbstractFlow{
 
-	private static Logger logger = Logger.getLogger("StartFlow");
+	private static Logger logger = Logger.getLogger(StartFlow.class.getName());
 	
 	private IBotUserService  userService;
 	
@@ -63,7 +63,8 @@ public class StartFlow extends AbstractFlow{
         userService = service.getPort(IBotUserService.class);
         
         user = new BotUser();
-
+		user.setChatId((int)this.chatId);
+		
 		GregorianCalendar c = new GregorianCalendar();
 		c.setTime(new Date());
 		XMLGregorianCalendar dateGregorian = null;
@@ -94,7 +95,6 @@ public class StartFlow extends AbstractFlow{
 		//  Get a user name
 		if (currentStep == 1) {
 			String name = updates.getMessage().getText();
-			user.setChatId((int)this.chatId);
 			user.setName(name);
 			
 			msg.setText("Hello, " + name + 
@@ -111,7 +111,7 @@ public class StartFlow extends AbstractFlow{
 				msg.setText("Cool! And what do you do in Trento? (e.g. student,"
 					 	+ " working at public service, travelling, etc)");
 			} catch(Exception e) {
-				e.printStackTrace();
+				logger.info(e.getMessage());
 				msg.setText("Okay, and what do you do in Trento?");
 			}
 			
@@ -129,16 +129,18 @@ public class StartFlow extends AbstractFlow{
 						+ "Now go ahead and navigate my other commands, search for ski resorts."
 						+ " However, I'd invite you to set"
 						+ " your preferences firstly.\n Just type '/preferences' :)");
+				logger.info("user created!");
 				}
 			} catch (ApiException_Exception e) {
-				e.printStackTrace();
+				logger.info(e.getMessage());
 				msg.setText("Something went wrong.. Anyway!\n"
 						+ "Now you can navigate my other commands, search for ski resorts,"
 						+ " but I'd invite you to set"
 						+ " your preferences firstly. Just type '/preferences' :)");
 			} 
-			
+			logger.info("dialog finished.");
 			this.isFinished = true;
+			
 		}
 		
 		this.currentStep += 1;

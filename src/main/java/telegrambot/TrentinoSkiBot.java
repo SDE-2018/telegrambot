@@ -23,6 +23,11 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+/**
+ * 
+ * @author ivan
+ *
+ */
 public class TrentinoSkiBot extends TelegramLongPollingBot {
 	
 	private static Logger logger = Logger.getLogger("logger");
@@ -63,14 +68,18 @@ public class TrentinoSkiBot extends TelegramLongPollingBot {
 	    }  
 	}
 	
+	/**
+	 * 
+	 * @param update
+	 * @throws TelegramApiException
+	 */
 	private void handleInputMessage(Update update) throws TelegramApiException {
-//		String message_text = update.getMessage().getText();
 		long chatId = update.getMessage().getChatId();
 		SendMessage message;
 		String text = update.getMessage().getText();
-		logger.info(supportedCommands.toString());
+		logger.info(text);
+//		logger.info(supportedCommands.toString()); // need to convert array to stream
 		for (String c: supportedCommands) {
-			logger.info(text);
 			if (c.equals(text)) {
 				message = dm.startCommandFlow(chatId, c);
 			    execute(message);
@@ -82,27 +91,34 @@ public class TrentinoSkiBot extends TelegramLongPollingBot {
     	execute(message);
 	}
 	
+	/**
+	 * 
+	 * @param update
+	 * @throws TelegramApiException
+	 */
 	private void handleCallback(Update update) throws TelegramApiException {
     	// Set variables
-        String call_data = update.getCallbackQuery().getData();
-        long message_id = update.getCallbackQuery().getMessage().getMessageId();
-        long chatId = update.getCallbackQuery().getMessage().getChatId();
-        
-        if (call_data.startsWith("START")) {
-        	String answer = new String(call_data.getBytes());
-        	logger.info("answer: " + answer);
-            EditMessageText new_message = new EditMessageText()
-                    .setChatId(chatId)
-                    .setMessageId(toIntExact(message_id))
-                    .setText(answer);
-            execute(new_message);
-        } else if (call_data.startsWith("HELP")) {
-        	
-        } else if (call_data.startsWith("FINISH")){
-        	dm.finishDialogFlow(chatId);
-        }
+//        String call_data = update.getCallbackQuery().getData();
+//        long message_id = update.getCallbackQuery().getMessage().getMessageId();
+//        long chatId = update.getCallbackQuery().getMessage().getChatId();
+//        
+//        if (call_data.startsWith("START")) {
+//        	String answer = new String(call_data.getBytes());
+//        	logger.info("answer: " + answer);
+//            EditMessageText new_message = new EditMessageText()
+//                    .setChatId(chatId)
+//                    .setMessageId(toIntExact(message_id))
+//                    .setText(answer);
+//            execute(new_message);
+//        }
+		long chatId = update.getCallbackQuery().getMessage().getChatId();
+		SendMessage message = dm.continueDialog(chatId, update);
+    	execute(message);
 	}
 	
+	/**
+	 * Entry method for all incoming responses from a user.
+	 */
     @Override
     public void onUpdateReceived(Update update) {  	
         if (update.hasMessage() && update.getMessage().hasText()) {
@@ -123,8 +139,6 @@ public class TrentinoSkiBot extends TelegramLongPollingBot {
     
     @Override
     public String getBotUsername() {
-        // Return bot username
-        // If bot username is @MyAmazingBot, it must return 'MyAmazingBot'
         return "trentinoskibot";
     }
 

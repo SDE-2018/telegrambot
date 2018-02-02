@@ -10,12 +10,15 @@ import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Update;
 
 /**
+ * TODO: forbid /preferences to happen before /start
+ * 
  * Manages inputs from users and passes the control to dialog flows.
  * Should take care of the current global state (switching topics etc).
  * List of supported flows:
- * 1. /start
+ * 1. /start 		| DONE
+ * 2. /preferences  | TODO: add the first recommendation in the end of the flow
+ * 
  * ----------
- * 2. /preferences
  * 3. /recommend
  * 4. /help
  * 5. /forget
@@ -40,7 +43,8 @@ public class DialogManager {
 	 * 
 	 */
 	private static String[] supportedCommands = {
-			"/start"
+			"/start",
+			"/preferences"
 	};
 	
 	public DialogManager() {};
