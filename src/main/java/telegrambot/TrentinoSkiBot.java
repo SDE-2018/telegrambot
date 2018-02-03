@@ -24,6 +24,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 /**
+ * Class utilizing Telegram API to handle inputs and generate responses.
  * 
  * @author ivan
  *
@@ -36,7 +37,11 @@ public class TrentinoSkiBot extends TelegramLongPollingBot {
 	
 	private static DialogManager dm = new DialogManager();
 	
+	/**
+	 * Cache supported commands.
+	 */
 	private static String[] supportedCommands = DialogManager.getSupportedCommands();
+	
 	
 	static {
 		Properties properties = new Properties();
@@ -69,7 +74,7 @@ public class TrentinoSkiBot extends TelegramLongPollingBot {
 	}
 	
 	/**
-	 * 
+	 * Pass the decision for response to dialog manager.
 	 * @param update
 	 * @throws TelegramApiException
 	 */
@@ -79,6 +84,8 @@ public class TrentinoSkiBot extends TelegramLongPollingBot {
 		String text = update.getMessage().getText();
 		logger.info(text);
 //		logger.info(supportedCommands.toString()); // need to convert array to stream
+		
+		// check if a user intends to start a new flow or continue existing one
 		for (String c: supportedCommands) {
 			if (c.equals(text)) {
 				message = dm.startCommandFlow(chatId, c);
@@ -86,31 +93,20 @@ public class TrentinoSkiBot extends TelegramLongPollingBot {
 			    return;
 			}
 		}
-		// other message:
+		// other messages
     	message = dm.continueDialog(chatId, update);
     	execute(message);
 	}
 	
 	/**
-	 * 
+	 * Pass the decision for response to dialog manager.
+	 * The difference is that a callback is usually an input from a user
+	 * directly to the message sent by the dialog manager, for instance,
+	 * a pressed button in inline keyboard.
 	 * @param update
 	 * @throws TelegramApiException
 	 */
 	private void handleCallback(Update update) throws TelegramApiException {
-    	// Set variables
-//        String call_data = update.getCallbackQuery().getData();
-//        long message_id = update.getCallbackQuery().getMessage().getMessageId();
-//        long chatId = update.getCallbackQuery().getMessage().getChatId();
-//        
-//        if (call_data.startsWith("START")) {
-//        	String answer = new String(call_data.getBytes());
-//        	logger.info("answer: " + answer);
-//            EditMessageText new_message = new EditMessageText()
-//                    .setChatId(chatId)
-//                    .setMessageId(toIntExact(message_id))
-//                    .setText(answer);
-//            execute(new_message);
-//        }
 		long chatId = update.getCallbackQuery().getMessage().getChatId();
 		SendMessage message = dm.continueDialog(chatId, update);
     	execute(message);

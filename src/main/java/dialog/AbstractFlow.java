@@ -25,6 +25,9 @@ public abstract class AbstractFlow implements DialogFlow {
 	 */
 	protected int currentStep;
 	
+	/**
+	 * Indicates if the flow has been finished (reached the final step) or no.
+	 */
 	protected boolean isFinished;
 	
 	public AbstractFlow(long chatId) {

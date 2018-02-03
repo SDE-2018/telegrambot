@@ -3,6 +3,7 @@ package dialog;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -11,6 +12,7 @@ import javax.xml.ws.Service;
 
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Update;
+import org.telegram.telegrambots.api.objects.inlinequery.InlineQuery;
 import org.telegram.telegrambots.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
@@ -78,6 +80,7 @@ public class PreferencesFlow extends AbstractFlow {
 		         .setChatId(chatId)
 		         .setText("Alright, let me know what do you prefer the most - skiing,"
 		         		+ "snowboarding or something else?");
+		
 		 InlineKeyboardMarkup markupInline = new InlineKeyboardMarkup();
 		 List<List<InlineKeyboardButton>> rowsInline = new ArrayList<>();
 		 List<InlineKeyboardButton> rowInline1 = new ArrayList<>();
@@ -184,16 +187,22 @@ public class PreferencesFlow extends AbstractFlow {
 		return msg;
 	}
 	
+	/**
+	 * Create an inline keyboard markup with 10 buttons in 2 columns.
+	 * @param range Recommended to set to 10.
+	 */
 	private static InlineKeyboardMarkup getMarkupExpertLevel(int range) {
 		InlineKeyboardMarkup markupInline = new InlineKeyboardMarkup();
 		 List<List<InlineKeyboardButton>> rowsInline = new ArrayList<>();
-		 List<InlineKeyboardButton> rowInline = new ArrayList<>();
-		 for (int i = 1; i <= range; i ++) {
-			 String n = Integer.toString(i);
-			 rowInline.add(new InlineKeyboardButton().setText(n)
-				 		.setCallbackData(n));
-		 }		 
-		 rowsInline.add(rowInline);
+		 for (int j = 0; j < range; j += 2) {
+			 String n1 = Integer.toString(j);
+			 String n2 = Integer.toString(j+1);
+			 rowsInline.add(new ArrayList<InlineKeyboardButton>(
+					 Arrays.asList(new InlineKeyboardButton().setText(n1)
+						 							.setCallbackData(n1),
+							 		new InlineKeyboardButton().setText(n2)
+							 						.setCallbackData(n2))));			 
+		 }
 		 markupInline.setKeyboard(rowsInline);
 		 
 		 return markupInline;
