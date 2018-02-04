@@ -45,4 +45,24 @@ public interface ISkiResortItemService {
         throws ApiException_Exception
     ;
 
+    /**
+     * 
+     * @param itemId
+     * @return
+     *     returns soap.ws.skiresortitem.SkiResortItem
+     * @throws ApiException_Exception
+     */
+    @WebMethod
+    @WebResult(name = "skiResortItemById", targetNamespace = "")
+    @RequestWrapper(localName = "getSkiResortItem", targetNamespace = "http://skiresortitem.ws.soap/", className = "soap.ws.skiresortitem.GetSkiResortItem")
+    @ResponseWrapper(localName = "getSkiResortItemResponse", targetNamespace = "http://skiresortitem.ws.soap/", className = "soap.ws.skiresortitem.GetSkiResortItemResponse")
+    @Action(input = "http://skiresortitem.ws.soap/ISkiResortItemService/getSkiResortItemRequest", output = "http://skiresortitem.ws.soap/ISkiResortItemService/getSkiResortItemResponse", fault = {
+        @FaultAction(className = ApiException_Exception.class, value = "http://skiresortitem.ws.soap/ISkiResortItemService/getSkiResortItem/Fault/ApiException")
+    })
+    public SkiResortItem getSkiResortItem(
+        @WebParam(name = "itemId", targetNamespace = "")
+        String itemId)
+        throws ApiException_Exception
+    ;
+
 }

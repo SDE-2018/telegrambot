@@ -81,6 +81,14 @@ public class DialogManager {
 			"/recommend"
 	};
 	
+	/**
+	 * This text can be set to <code>SendMessage msg.setText(SKIP)</code>
+	 * in order to deal with situations, when a user does not 
+	 * expect a response from us. For instance, in /recommend flow
+	 * we do not need to response to every user evaluation.
+	 */
+	public static final String SKIP = "SKIP";
+	
 	
 	public DialogManager() {};
 	

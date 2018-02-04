@@ -25,7 +25,9 @@ import javax.xml.namespace.QName;
 public class ObjectFactory {
 
     private final static QName _CreateSkiResortItem_QNAME = new QName("http://skiresortitem.ws.soap/", "createSkiResortItem");
+    private final static QName _GetSkiResortItem_QNAME = new QName("http://skiresortitem.ws.soap/", "getSkiResortItem");
     private final static QName _CreateSkiResortItemResponse_QNAME = new QName("http://skiresortitem.ws.soap/", "createSkiResortItemResponse");
+    private final static QName _GetSkiResortItemResponse_QNAME = new QName("http://skiresortitem.ws.soap/", "getSkiResortItemResponse");
     private final static QName _ApiException_QNAME = new QName("http://skiresortitem.ws.soap/", "ApiException");
 
     /**
@@ -44,11 +46,27 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link GetSkiResortItem }
+     * 
+     */
+    public GetSkiResortItem createGetSkiResortItem() {
+        return new GetSkiResortItem();
+    }
+
+    /**
      * Create an instance of {@link CreateSkiResortItemResponse }
      * 
      */
     public CreateSkiResortItemResponse createCreateSkiResortItemResponse() {
         return new CreateSkiResortItemResponse();
+    }
+
+    /**
+     * Create an instance of {@link GetSkiResortItemResponse }
+     * 
+     */
+    public GetSkiResortItemResponse createGetSkiResortItemResponse() {
+        return new GetSkiResortItemResponse();
     }
 
     /**
@@ -77,12 +95,30 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link GetSkiResortItem }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://skiresortitem.ws.soap/", name = "getSkiResortItem")
+    public JAXBElement<GetSkiResortItem> createGetSkiResortItem(GetSkiResortItem value) {
+        return new JAXBElement<GetSkiResortItem>(_GetSkiResortItem_QNAME, GetSkiResortItem.class, null, value);
+    }
+
+    /**
      * Create an instance of {@link JAXBElement }{@code <}{@link CreateSkiResortItemResponse }{@code >}}
      * 
      */
     @XmlElementDecl(namespace = "http://skiresortitem.ws.soap/", name = "createSkiResortItemResponse")
     public JAXBElement<CreateSkiResortItemResponse> createCreateSkiResortItemResponse(CreateSkiResortItemResponse value) {
         return new JAXBElement<CreateSkiResortItemResponse>(_CreateSkiResortItemResponse_QNAME, CreateSkiResortItemResponse.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link GetSkiResortItemResponse }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://skiresortitem.ws.soap/", name = "getSkiResortItemResponse")
+    public JAXBElement<GetSkiResortItemResponse> createGetSkiResortItemResponse(GetSkiResortItemResponse value) {
+        return new JAXBElement<GetSkiResortItemResponse>(_GetSkiResortItemResponse_QNAME, GetSkiResortItemResponse.class, null, value);
     }
 
     /**

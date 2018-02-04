@@ -1,17 +1,22 @@
 package dialog;
 
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
+import javax.validation.constraints.AssertTrue;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
+import javax.xml.namespace.QName;
+import javax.xml.ws.Service;
 
 import org.glassfish.jersey.client.ClientConfig;
 import org.json.JSONArray;
@@ -23,11 +28,13 @@ import org.telegram.telegrambots.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.api.objects.replykeyboard.ReplyKeyboard;
 import org.telegram.telegrambots.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import soap.ws.skiresortitem.SkiResortItem;
 import soap.ws.skiresortitem.SkiResortItemService;
-
-//import soap.ws.skiresortitem.ISkiResortItemService;
-//import soap.ws.skiresortitem.SkiResortItem;
+import soap.ws.botuser.IBotUserService;
+import soap.ws.skiresortitem.ApiException_Exception;
+import soap.ws.skiresortitem.ISkiResortItemService;
 
 /**
  * 
@@ -46,8 +53,18 @@ public class RecommendFlow extends AbstractFlow {
 	
 	private WebTarget service;
 	
-     
-     private static URI getRecommendationServiceURI() {
+	/**
+	 * Default number of recommendations to propose for a user.
+	 */
+    private int nRecommendations = 3;
+	
+    private ISkiResortItemService skiResortService;
+    /**
+     * Number of the processed recommendations at the moment.
+     */
+    private int nEvaluated = 0;
+    
+    private static URI getRecommendationServiceURI() {
          return UriBuilder.fromUri(
                  "http://localhost:5901/"
 //         		"http://assignment2-chernukha.herokuapp.com/"
@@ -57,13 +74,25 @@ public class RecommendFlow extends AbstractFlow {
 	
 	public RecommendFlow(long chatId) {
 		super(chatId);
-		
+		// recommendation service
 		 ClientConfig clientConfig = new ClientConfig();
 	     Client client = ClientBuilder.newClient(clientConfig);
 	     service = client.target(getRecommendationServiceURI());
 	     
 	     logger.info("Recommendation server address: " + 
 	    		 				getRecommendationServiceURI().toString() ); 
+	     // ski resort item storage service
+	     URL url = null;
+			try {
+//				URL url = new URL("https://assignment3-chernukha.herokuapp.com/people?wsdl");
+				url = new URL("http://localhost:9093/skiresort?wsdl");
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+			}
+        QName qname = new QName("http://skiresortitem.ws.soap/", "SkiResortItemService"); 
+        Service service = Service.create(url, qname);
+        skiResortService = service.getPort(ISkiResortItemService.class);
+        logger.info("Recommend flow initialized");
 	}
 
 	/**
@@ -71,43 +100,57 @@ public class RecommendFlow extends AbstractFlow {
 	 */
 	@Override
 	public List<SendMessage> initFlow() {
-		// this.currentStep += 1;
 		List<SendMessage> result = new ArrayList<>();
 		// send rest request to get recommendation by user id
 		
 		// TODO: move this to logic layer!
-		String path = "recommend/user/" + Long.toString(this.chatId) + "/3";
+		// --------------------------
+		String path = "recommend/user/" + Long.toString(this.chatId)
+									+ "/" + Integer.toString(nRecommendations);
 		Response resp = service.path(path).request().accept(MediaType.APPLICATION_JSON)
         		.header("Content-type","application/json").get();
         String responseStr = resp.readEntity(String.class);
         logger.info(responseStr);
-        
+        // --------------------------
         // parse json
         List<Object> resortIds = new JSONArray(responseStr).toList();
+        int nValidRecommendations = 0;
         for (Object o: resortIds) {
+        	SendMessage msg = new SendMessage().setChatId(chatId)
+					.enableHtml(true);
         	String resortId = o.toString();
         	logger.info("Resort id: " + resortId);
-        	String text = "text";
-        	
-		// get skiresortitem entities by id
-//        SkiResortItem item = 
-        // add evaluation 5 stars reply markup
-		
-		// call .toString and setText
-        	
-        	SendMessage msg = new SendMessage().setChatId(chatId)
-        												.enableHtml(true);
-        	msg.setReplyMarkup(getEvaluationReplyMarkup(resortId, Long.toString(chatId)));
-        	msg.setText(text);
+        	SkiResortItem item = null;
+        	// get skiresortitem entities by id
+	        try {
+				item = skiResortService.getSkiResortItem(resortId);
+				msg.setText(item.toString());
+				nValidRecommendations += 1;
+			} catch (ApiException_Exception e) {
+				e.printStackTrace();
+				logger.info("error retrieving ski item with id " + resortId);
+				// skip this failed recommendation
+				continue;
+			} 
+        	// add evaluation 5 stars reply markup
+        	msg.setReplyMarkup(getEvaluationReplyMarkup(resortId,
+        											Long.toString(chatId)));
         	result.add(msg);
         }
-        String res = "";
-		res += "<b>" + "Monte Bondone" + "</b>\n";
-		res += "<a href=\"" + "https://skimap.org/data/12873/2205/1505481965.jpg" + "\">Map</a>";
-
-		
-		
-		
+        if (nValidRecommendations == 0) {
+        	SendMessage msg = new SendMessage().setChatId(chatId)
+        						.setText("I'm sorry, I have a bad and cannot"
+        								+ " suggest anything to you...( ");
+        	result.add(msg);
+        } else {
+        	/**
+        	 *  The logic here is that in case we retrieved less then default
+        	 *  number should be retrieved, then we set this counter in order to 
+        	 *  properly process responses for these recommendations.
+        	 */
+        	
+        	nRecommendations = nValidRecommendations;
+        }
         return result;
 	}
 
@@ -139,24 +182,36 @@ public class RecommendFlow extends AbstractFlow {
 
 
 	/**
-	 * Evaluate the given recommendations.
+	 * Evaluates the given recommendations.
 	 */
 	@Override
 	public SendMessage continueFlow(Update updates) {
 		SendMessage msg = new SendMessage().setChatId(this.chatId);
-		// get callback data - resort id, rating
+		msg.setText(DialogManager.SKIP);
+		
+		// get callback data 
+		// 0 - resortId
+		// 1 - chatId (don't need, but in case)
+		// 2 - rating in stars from 1 to 5
 		List<String> evaluation = Arrays.asList(updates.getCallbackQuery().getData().split(","));
-
+		
+		// check we get from the right chat :)
+		assert(evaluation.get(1).equals(Long.toString(this.chatId)));
+		
 		logger.info(evaluation.toString());
 		for (String s: evaluation) {
 			logger.info(s);
 		}
 		// update via soap the rating
-		// ask if the user want more
 		
-		// check if no then finish the flow 
-		// if yes - ???
-		return null;
+		nEvaluated += 1;
+		
+		// check if we processed all evaluations
+		if (nEvaluated == nRecommendations) {
+			this.isFinished = true;
+			msg.setText("Thank you for your responses!");
+		}
+		return msg;
 	}
 
 }

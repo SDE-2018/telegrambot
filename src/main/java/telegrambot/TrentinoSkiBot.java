@@ -96,7 +96,9 @@ public class TrentinoSkiBot extends TelegramLongPollingBot {
 		}
 		// other messages
     	message = dm.continueDialog(chatId, update);
-    	execute(message);
+    	if (message.getText() != DialogManager.SKIP) {
+    		execute(message);
+    	}
 	}
 	
 	/**
