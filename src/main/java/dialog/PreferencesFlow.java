@@ -68,7 +68,7 @@ public class PreferencesFlow extends AbstractFlow {
 		
         //1st argument service URI, refer to wsdl document above
         //2nd argument is service name, refer to wsdl document above
-        QName qname = new QName("http://ws.soap/", "BotUserService"); 
+        QName qname = new QName("http://botuser.ws.soap/", "BotUserService"); 
         Service service = Service.create(url, qname);
         userService = service.getPort(IBotUserService.class);
         
@@ -77,7 +77,9 @@ public class PreferencesFlow extends AbstractFlow {
 	}
 
 	@Override
-	public SendMessage initFlow() {
+	public List<SendMessage> initFlow() {
+		List<SendMessage> res = new ArrayList<>();
+	
 		SendMessage message = new SendMessage() 
 		         .setChatId(chatId)
 		         .setText("Alright, let me know what do you prefer the most - skiing,"
@@ -104,7 +106,8 @@ public class PreferencesFlow extends AbstractFlow {
 		 message.setReplyMarkup(markupInline);
 		 
 		 this.currentStep += 1;
-		 return message;
+		 res.add(message);
+		 return res;
 	}
 	/**
 	* Continue:

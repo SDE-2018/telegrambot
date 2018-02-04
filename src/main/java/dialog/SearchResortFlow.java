@@ -1,5 +1,7 @@
 package dialog;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.telegram.telegrambots.api.methods.send.SendMessage;
@@ -17,10 +19,12 @@ public class SearchResortFlow extends AbstractFlow {
 	}
 	
 	@Override
-	public SendMessage initFlow() {
+	public List<SendMessage> initFlow() {
 		this.currentStep += 1;
-		return new SendMessage().setChatId(this.chatId)
-						.setText("Welcome to our service! What is your name?");
+		List<SendMessage> res = new ArrayList<>();
+		res.add(new SendMessage().setChatId(this.chatId)
+				.setText("Welcome to our service! What is your name?"));
+		return res;
 	}
 
 	@Override

@@ -1,26 +1,29 @@
 package dialog;
 
+
+import java.util.List;
+
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Update;
 
 
 /**
- * General interface for creating a response to a flow implementing
- * certain behavior.
+ * General interface to access a flow implementing
+ * a certain behavior.
  * @author ivan
  *
  */
 public interface DialogFlow {
 	
 	/**
-	 * This method is called when a user types a command that is initiating a flow.
+	 * Called when a user types a command that is initiating a flow.
 	 * @return First message to the user from the flow.
 	 */
-	public SendMessage initFlow();
+	public List<SendMessage> initFlow();	
 	
 	
 	/**
-	 * This method gives all consequent responses to a user within the flow.
+	 * Gives all consequent responses to a user within the flow.
 	 * It intentionally does not throw any exception, in order to encourage
 	 * a developer to deal with user interactions in a safe way!
 	 * @param updates contain user message related info.

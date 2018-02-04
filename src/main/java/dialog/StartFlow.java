@@ -4,8 +4,10 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 import java.util.logging.Logger;
@@ -78,10 +80,12 @@ public class StartFlow extends AbstractFlow{
 	}
 	
 	@Override
-	public SendMessage initFlow() {    
+	public List<SendMessage> initFlow() {    
 		this.currentStep += 1;
-		return new SendMessage().setChatId(chatId)
-						.setText("Welcome to my service! What is your name?");
+		List<SendMessage> res = new ArrayList<>();
+		res.add(new SendMessage().setChatId(this.chatId)
+				.setText("Welcome to our service! What is your name?"));
+		return res;
 	}
 
 	/**

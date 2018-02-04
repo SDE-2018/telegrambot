@@ -1,5 +1,7 @@
 package dialog;
 
+import java.util.List;
+
 import javax.ws.rs.NotSupportedException;
 
 import org.telegram.telegrambots.api.methods.send.SendMessage;
@@ -35,7 +37,7 @@ public abstract class AbstractFlow implements DialogFlow {
 	}
 
 	@Override
-	public SendMessage initFlow() {
+	public List<SendMessage> initFlow() {
 		// Auto-generated method stub
 		throw new NotSupportedException();
 	}

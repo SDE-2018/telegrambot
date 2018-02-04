@@ -24,12 +24,10 @@ import org.telegram.telegrambots.api.objects.Update;
  *  /start 		  | DONE
  *  /preferences  | TODO: add the first recommendation in the end of the flow
  *  /help		  | IN PROGRESS
- *  /stop		  | 
+ *  /stop		  | DONE
+ *  /recommend	  | IN PROGRESS
  * ----------
- * 3. /recommend
- * 
- * 
- * 
+ *  
  * 
  * 5. /forget
  * 7. /search_resort
@@ -79,7 +77,8 @@ public class DialogManager {
 			"/start",
 			"/preferences",
 			"/help",
-			"/stop"
+			"/stop",
+			"/recommend"
 	};
 	
 	
@@ -97,6 +96,9 @@ public class DialogManager {
 		if (dialogFlow.isFinished()) {
 			finishDialogFlow(chatId);
 		}
+		if (result == null)
+			result = new SendMessage().setChatId(chatId)
+						.setText("Sorry, something went wrong!");
 		return result;
 	}
 	
@@ -121,7 +123,7 @@ public class DialogManager {
 	/**
 	 * Initiate StartFlow responsible for the command '/start'.
 	 */
-	private SendMessage start(long chatId) {
+	private List<SendMessage> start(long chatId) {
 		StartFlow f = new StartFlow(chatId);
 		currentDialogFlow.put(chatId, f);
 		logger.info("starting new start dialogflow.." + Long.toString(chatId));
@@ -132,7 +134,7 @@ public class DialogManager {
 	/**
 	 * Initiate PreferencesFlow responsible for the command '/preferences'.
 	 */
-	private SendMessage preferences(long chatId) {
+	private List<SendMessage> preferences(long chatId) {
 		PreferencesFlow f = new PreferencesFlow(chatId);
 		currentDialogFlow.put(chatId, f);
 		logger.info("starting new preferences dialogflow.." + Long.toString(chatId));
@@ -175,6 +177,7 @@ public class DialogManager {
 		
 		// deal with topic switch
 		if (currentDialogFlow.containsKey(chatId)) {
+			logger.info("Trying to switch the topic!");
 			msg.setText("Hmm, seems you've changed the topic,"
 								+ " are you sure you wanna stop? "
 								+ "If yes, please, type /stop");
@@ -185,24 +188,24 @@ public class DialogManager {
 		switch (command) {
 			case "/start":
 				logger.info("start...");
-				msg = start(chatId);
+				msgList = start(chatId);
 				break;
 			case "/preferences":
-				msg = preferences(chatId);
+				msgList = preferences(chatId);
 				break;
 			case "/recommend":
-				msg = recommend(chatId);
+				msgList = recommend(chatId);
 				break;
 			case "/search_resort":
-				msg = searchResort(chatId);
+				msgList = searchResort(chatId);
 				break;
 			
 			default:
 				msg.setText("I'm sorry, didn't get you. Could you repeat, please?");
+				msgList.add(msg);
 		}
-		logger.info(msg.getText());
 		
-		msgList.add(msg);
+		
 		for (SendMessage m: msgList) {
 			logger.info(m.getText());
 		}
@@ -244,7 +247,7 @@ public class DialogManager {
 	}
 	
 	
-	private SendMessage searchResort(long chatId) {
+	private List<SendMessage> searchResort(long chatId) {
 		SearchResortFlow f = new SearchResortFlow(chatId);
 		currentDialogFlow.put(chatId, f);
 		logger.info("starting new search resort flow.." + Long.toString(chatId));
@@ -252,7 +255,7 @@ public class DialogManager {
 	}
 
 	
-	private SendMessage recommend(long chatId) {
+	private List<SendMessage> recommend(long chatId) {
 		RecommendFlow f = new RecommendFlow(chatId);
 		currentDialogFlow.put(chatId, f);
 		logger.info("starting new recommendation flow.." + Long.toString(chatId));
