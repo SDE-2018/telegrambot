@@ -58,14 +58,10 @@ public class TrentinoSkiBot extends TelegramLongPollingBot {
 	static {
 	    FileHandler fh;  
 	    try {  
-	        // This block configure the logger with handler and formatter  
-	        fh = new FileHandler("logs.log");  
+	        fh = new FileHandler("bot-logs.log");  
 	        logger.addHandler(fh);
 	        SimpleFormatter formatter = new SimpleFormatter();  
 	        fh.setFormatter(formatter);  
-	        // the following statement is used to log any messages  
-	        logger.info("My first log");  
-
 	    } catch (SecurityException e) {  
 	        e.printStackTrace();  
 	    } catch (IOException e) {  
@@ -81,6 +77,7 @@ public class TrentinoSkiBot extends TelegramLongPollingBot {
 	private void handleInputMessage(Update update) throws TelegramApiException {
 		long chatId = update.getMessage().getChatId();
 		SendMessage message;
+		List<SendMessage> msgList = new ArrayList<>();
 		String text = update.getMessage().getText();
 		logger.info(text);
 //		logger.info(supportedCommands.toString()); // need to convert array to stream
@@ -88,8 +85,12 @@ public class TrentinoSkiBot extends TelegramLongPollingBot {
 		// check if a user intends to start a new flow or continue existing one
 		for (String c: supportedCommands) {
 			if (c.equals(text)) {
-				message = dm.startCommandFlow(chatId, c);
-			    execute(message);
+//				message = dm.startCommandFlow(chatId, c);
+//			    execute(message);
+				msgList = dm.startCommandFlow(chatId, c);
+				for (SendMessage m: msgList) {
+					execute(m);
+				}
 			    return;
 			}
 		}

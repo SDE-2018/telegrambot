@@ -1,5 +1,5 @@
 
-package soap.ws;
+package soap.ws.skiresortitem;
 
 import javax.xml.ws.WebFault;
 
@@ -10,7 +10,7 @@ import javax.xml.ws.WebFault;
  * Generated source version: 2.2
  * 
  */
-@WebFault(name = "ApiException", targetNamespace = "http://ws.soap/")
+@WebFault(name = "ApiException", targetNamespace = "http://skiresortitem.ws.soap/")
 public class ApiException_Exception
     extends Exception
 {
@@ -45,7 +45,7 @@ public class ApiException_Exception
     /**
      * 
      * @return
-     *     returns fault bean: soap.ws.ApiException
+     *     returns fault bean: soap.ws.skiresortitem.ApiException
      */
     public ApiException getFaultInfo() {
         return faultInfo;

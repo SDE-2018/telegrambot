@@ -11,6 +11,7 @@ public class SearchResortFlow extends AbstractFlow {
 	
 	// TODO: add User SOAP REST service to send POST requests to create user preferences
 	
+	
 	public SearchResortFlow(long chatId) {
 		super(chatId);
 	}

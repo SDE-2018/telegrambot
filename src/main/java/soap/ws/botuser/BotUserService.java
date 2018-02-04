@@ -1,5 +1,5 @@
 
-package soap.ws;
+package soap.ws.botuser;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -17,14 +17,14 @@ import javax.xml.ws.WebServiceFeature;
  * Generated source version: 2.2
  * 
  */
-@WebServiceClient(name = "BotUserService", targetNamespace = "http://ws.soap/", wsdlLocation = "http://localhost:9090/botuser?wsdl")
+@WebServiceClient(name = "BotUserService", targetNamespace = "http://botuser.ws.soap/", wsdlLocation = "http://localhost:9090/botuser?wsdl")
 public class BotUserService
     extends Service
 {
 
     private final static URL BOTUSERSERVICE_WSDL_LOCATION;
     private final static WebServiceException BOTUSERSERVICE_EXCEPTION;
-    private final static QName BOTUSERSERVICE_QNAME = new QName("http://ws.soap/", "BotUserService");
+    private final static QName BOTUSERSERVICE_QNAME = new QName("http://botuser.ws.soap/", "BotUserService");
 
     static {
         URL url = null;
@@ -69,7 +69,7 @@ public class BotUserService
      */
     @WebEndpoint(name = "BotUserServiceImplPort")
     public IBotUserService getBotUserServiceImplPort() {
-        return super.getPort(new QName("http://ws.soap/", "BotUserServiceImplPort"), IBotUserService.class);
+        return super.getPort(new QName("http://botuser.ws.soap/", "BotUserServiceImplPort"), IBotUserService.class);
     }
 
     /**
@@ -81,7 +81,7 @@ public class BotUserService
      */
     @WebEndpoint(name = "BotUserServiceImplPort")
     public IBotUserService getBotUserServiceImplPort(WebServiceFeature... features) {
-        return super.getPort(new QName("http://ws.soap/", "BotUserServiceImplPort"), IBotUserService.class, features);
+        return super.getPort(new QName("http://botuser.ws.soap/", "BotUserServiceImplPort"), IBotUserService.class, features);
     }
 
     private static URL __getWsdlLocation() {

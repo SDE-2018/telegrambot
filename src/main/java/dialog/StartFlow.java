@@ -20,7 +20,7 @@ import javax.xml.ws.Service;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Update;
 
-import soap.ws.*;
+import soap.ws.botuser.*;
 
 /**
  * StartFlow manages the dialog flow of the command '/start'.
@@ -58,7 +58,7 @@ public class StartFlow extends AbstractFlow{
 		
         //1st argument service URI, refer to wsdl document above
         //2nd argument is service name, refer to wsdl document above
-        QName qname = new QName("http://ws.soap/", "BotUserService"); 
+        QName qname = new QName("http://botuser.ws.soap/", "BotUserService"); 
         Service service = Service.create(url, qname);
         userService = service.getPort(IBotUserService.class);
         

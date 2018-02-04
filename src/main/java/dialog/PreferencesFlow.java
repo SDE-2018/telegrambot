@@ -16,12 +16,14 @@ import org.telegram.telegrambots.api.objects.inlinequery.InlineQuery;
 import org.telegram.telegrambots.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
-import soap.ws.ApiException_Exception;
-import soap.ws.BotUser;
-import soap.ws.IBotUserService;
+import soap.ws.botuser.ApiException_Exception;
+import soap.ws.botuser.BotUser;
+import soap.ws.botuser.IBotUserService;
 
 
 /**
+ * TODO: send the first recommendation (pass control to recommendation flow?)
+ * 
  * PreferencesFlow manages the dialog flow of the command '/preferences'.
  * The flow looks like this:
  * Init: 
@@ -104,7 +106,17 @@ public class PreferencesFlow extends AbstractFlow {
 		 this.currentStep += 1;
 		 return message;
 	}
-
+	/**
+	* Continue:
+ * 		1. Ask how good is the expert level of the option the user selected in the
+ * 			previous step. Display a keyboard with 10 buttons meaning range from 1 to 10.
+ * 		2. Ask for budget limit a user would like to spend in one day.
+ * 			Expects integer number in EUR.
+ * 		3. Ask if the resort should be close to Trento city or it's not important.
+ * 			Will display a keyboard with two options:
+ * 			- Yes
+ * 			- Not important
+	 */
 	@Override
 	public SendMessage continueFlow(Update updates) {
 		SendMessage msg = new SendMessage().setChatId(this.chatId);

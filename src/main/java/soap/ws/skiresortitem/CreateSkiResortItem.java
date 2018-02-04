@@ -1,5 +1,5 @@
 
-package soap.ws;
+package soap.ws.skiresortitem;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -7,16 +7,16 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for createBotUser complex type.
+ * <p>Java class for createSkiResortItem complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="createBotUser">
+ * &lt;complexType name="createSkiResortItem">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="user" type="{http://ws.soap/}botUser" minOccurs="0"/>
+ *         &lt;element name="user" type="{http://skiresortitem.ws.soap/}skiResortItem" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -26,22 +26,22 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "createBotUser", propOrder = {
+@XmlType(name = "createSkiResortItem", propOrder = {
     "user"
 })
-public class CreateBotUser {
+public class CreateSkiResortItem {
 
-    protected BotUser user;
+    protected SkiResortItem user;
 
     /**
      * Gets the value of the user property.
      * 
      * @return
      *     possible object is
-     *     {@link BotUser }
+     *     {@link SkiResortItem }
      *     
      */
-    public BotUser getUser() {
+    public SkiResortItem getUser() {
         return user;
     }
 
@@ -50,10 +50,10 @@ public class CreateBotUser {
      * 
      * @param value
      *     allowed object is
-     *     {@link BotUser }
+     *     {@link SkiResortItem }
      *     
      */
-    public void setUser(BotUser value) {
+    public void setUser(SkiResortItem value) {
         this.user = value;
     }
 
