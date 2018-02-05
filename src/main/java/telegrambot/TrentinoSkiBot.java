@@ -96,7 +96,7 @@ public class TrentinoSkiBot extends TelegramLongPollingBot {
 		}
 		// other messages
     	message = dm.continueDialog(chatId, update);
-    	if (message.getText() != DialogManager.SKIP) {
+    	if (!message.getText().equals(DialogManager.SKIP)) {
     		execute(message);
     	}
 	}
@@ -112,7 +112,9 @@ public class TrentinoSkiBot extends TelegramLongPollingBot {
 	private void handleCallback(Update update) throws TelegramApiException {
 		long chatId = update.getCallbackQuery().getMessage().getChatId();
 		SendMessage message = dm.continueDialog(chatId, update);
-    	execute(message);
+    	if (!message.getText().equals(DialogManager.SKIP)) {
+    		execute(message);
+    	}
 	}
 	
 	/**

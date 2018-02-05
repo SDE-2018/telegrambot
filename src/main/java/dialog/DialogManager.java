@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Update;
 
+
 /**
  * TODO: forbid /preferences to happen before /start
  * 
@@ -22,10 +23,11 @@ import org.telegram.telegrambots.api.objects.Update;
  * 
  * List of supported flows:
  *  /start 		  | DONE
- *  /preferences  | TODO: add the first recommendation in the end of the flow
+ *  /preferences  | TODO ???: add the first recommendation in the end of the flow
  *  /help		  | IN PROGRESS
  *  /stop		  | DONE
- *  /recommend	  | IN PROGRESS
+ *  /recommend	  | IN PROGRESS ?
+ *  /info 		  | IN PROGRESS
  * ----------
  *  
  * 
@@ -34,7 +36,7 @@ import org.telegram.telegrambots.api.objects.Update;
  * 8. /add_resort
  * 9. /update_resort
  * 10./remove_resort
- * 11. /info
+ * 11. /info 
  * 
  * @author ivan
  *
@@ -71,14 +73,15 @@ public class DialogManager {
 	 * 9. /stop  Stop the interaction with the current command. 
 	 * 	Be careful - I will not ask you for a confirmation!
 	 * 10. /help List all commands.
-	 * 11. /info List info about the user.
+	 * 11. /info List info about the user. Also lists resorts you evaluated as 5 stars. 
 	 */
 	private static String[] supportedCommands = {
 			"/start",
 			"/preferences",
 			"/help",
 			"/stop",
-			"/recommend"
+			"/recommend",
+			"/info"
 	};
 	
 	/**
@@ -99,14 +102,28 @@ public class DialogManager {
 	 * @return response for user input in the middle of the flow
 	 */
 	public SendMessage continueDialog(long chatId, Update update) {
-		DialogFlow dialogFlow = currentDialogFlow.get(chatId);
-		SendMessage result = dialogFlow.continueFlow(update);
-		if (dialogFlow.isFinished()) {
-			finishDialogFlow(chatId);
+		// check if user types non-existent command
+		if (update.getMessage() != null) { //if it's actually a message and not a callback
+			String msgText = update.getMessage().getText();
+			if (msgText != null && msgText.startsWith("/")) {
+				return new SendMessage().setChatId(update.getMessage().getChatId())
+						.setText("Sorry, I don't support this feature yet...");
+			}
 		}
-		if (result == null)
+		SendMessage result = null;
+		DialogFlow dialogFlow = currentDialogFlow.get(chatId);
+		if (dialogFlow == null) {
 			result = new SendMessage().setChatId(chatId)
-						.setText("Sorry, something went wrong!");
+					.setText("Sorry, I can't understand you!");
+		} else {
+			result = dialogFlow.continueFlow(update);
+			if (dialogFlow.isFinished()) {
+				finishDialogFlow(chatId);
+			}
+			if (result == null)
+				result = new SendMessage().setChatId(chatId)
+							.setText("Sorry, something went wrong!");
+		}
 		return result;
 	}
 	
@@ -207,7 +224,9 @@ public class DialogManager {
 			case "/search_resort":
 				msgList = searchResort(chatId);
 				break;
-			
+			case "/info":
+				msgList = info(chatId);
+				break;
 			default:
 				msg.setText("I'm sorry, didn't get you. Could you repeat, please?");
 				msgList.add(msg);
@@ -218,6 +237,13 @@ public class DialogManager {
 			logger.info(m.getText());
 		}
 		return msgList;
+	}
+
+	private List<SendMessage> info(long chatId) {
+		InfoFlow f = new InfoFlow(chatId);
+		currentDialogFlow.put(chatId, f);
+		logger.info("starting new info flow.." + Long.toString(chatId));
+		return f.initFlow();
 	}
 
 	/**
@@ -247,7 +273,7 @@ public class DialogManager {
 			+ "9. /stop  Stop the interaction with the current command.Be careful -"
 			+ " I will not ask you for a confirmation!\n"
 			+ "10. /help List all commands.\n"
-			+ "11. /info In progress \n\n"
+			+ "11. /info List info about the user. Also lists resorts you evaluated as 5 stars. \n\n"
 			+ "I hope this helped you!)"; 
 		
 		msg.setText(resultText);
