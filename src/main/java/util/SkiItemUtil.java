@@ -12,13 +12,13 @@ public class SkiItemUtil {
 			res += "<a href=\"" + i.getOfficialWebsite() + "\">" + i.getOfficialWebsite() + "</a>\n";
 		}
 		if (i.getLiftCount() != 0) {
-			res += "<b>Lift count:</b>" + Integer.toString(i.getLiftCount()) + "\n";
+			res += "<b>Lift count: </b>" + Integer.toString(i.getLiftCount()) + "\n";
 		}
 		if (i.getLongestRun() != 0) {
-			res += "<b>Longest run:</b>" + Integer.toString(i.getLongestRun()) + " meters\n";
+			res += "<b>Longest run: </b>" + Integer.toString(i.getLongestRun()) + " meters\n";
 		}
 		if (i.getTop() != 0) {
-			res += "<b>Top:</b>" + Integer.toString(i.getTop()) + "m\n";
+			res += "<b>Top: </b>" + Integer.toString(i.getTop()) + "m\n";
 		}
 		if (i.isTerrainPark()) {
 			res += "<b>Has Terrain Park!</b>\n";
