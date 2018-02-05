@@ -65,4 +65,19 @@ public interface IBotUserService {
         throws ApiException_Exception
     ;
 
+    /**
+     * 
+     * @param userId
+     * @return
+     *     returns soap.ws.botuser.BotUser
+     */
+    @WebMethod
+    @WebResult(name = "createdBotUserInfo", targetNamespace = "")
+    @RequestWrapper(localName = "getBotUserById", targetNamespace = "http://botuser.ws.soap/", className = "soap.ws.botuser.GetBotUserById")
+    @ResponseWrapper(localName = "getBotUserByIdResponse", targetNamespace = "http://botuser.ws.soap/", className = "soap.ws.botuser.GetBotUserByIdResponse")
+    @Action(input = "http://botuser.ws.soap/IBotUserService/getBotUserByIdRequest", output = "http://botuser.ws.soap/IBotUserService/getBotUserByIdResponse")
+    public BotUser getBotUserById(
+        @WebParam(name = "userId", targetNamespace = "")
+        String userId);
+
 }

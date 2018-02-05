@@ -1,6 +1,7 @@
 
 package soap.ws.skiresortitem;
 
+import java.util.List;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.jws.WebResult;
@@ -50,19 +51,53 @@ public interface ISkiResortItemService {
      * @param itemId
      * @return
      *     returns soap.ws.skiresortitem.SkiResortItem
-     * @throws ApiException_Exception
      */
     @WebMethod
     @WebResult(name = "skiResortItemById", targetNamespace = "")
     @RequestWrapper(localName = "getSkiResortItem", targetNamespace = "http://skiresortitem.ws.soap/", className = "soap.ws.skiresortitem.GetSkiResortItem")
     @ResponseWrapper(localName = "getSkiResortItemResponse", targetNamespace = "http://skiresortitem.ws.soap/", className = "soap.ws.skiresortitem.GetSkiResortItemResponse")
-    @Action(input = "http://skiresortitem.ws.soap/ISkiResortItemService/getSkiResortItemRequest", output = "http://skiresortitem.ws.soap/ISkiResortItemService/getSkiResortItemResponse", fault = {
-        @FaultAction(className = ApiException_Exception.class, value = "http://skiresortitem.ws.soap/ISkiResortItemService/getSkiResortItem/Fault/ApiException")
-    })
+    @Action(input = "http://skiresortitem.ws.soap/ISkiResortItemService/getSkiResortItemRequest", output = "http://skiresortitem.ws.soap/ISkiResortItemService/getSkiResortItemResponse")
     public SkiResortItem getSkiResortItem(
         @WebParam(name = "itemId", targetNamespace = "")
-        String itemId)
-        throws ApiException_Exception
-    ;
+        String itemId);
+
+    /**
+     * 
+     * @param itemId
+     * @param rating
+     * @param userId
+     * @return
+     *     returns boolean
+     */
+    @WebMethod
+    @WebResult(name = "createdRating", targetNamespace = "")
+    @RequestWrapper(localName = "addSkiItemRating", targetNamespace = "http://skiresortitem.ws.soap/", className = "soap.ws.skiresortitem.AddSkiItemRating")
+    @ResponseWrapper(localName = "addSkiItemRatingResponse", targetNamespace = "http://skiresortitem.ws.soap/", className = "soap.ws.skiresortitem.AddSkiItemRatingResponse")
+    @Action(input = "http://skiresortitem.ws.soap/ISkiResortItemService/addSkiItemRatingRequest", output = "http://skiresortitem.ws.soap/ISkiResortItemService/addSkiItemRatingResponse")
+    public boolean addSkiItemRating(
+        @WebParam(name = "userId", targetNamespace = "")
+        String userId,
+        @WebParam(name = "itemId", targetNamespace = "")
+        String itemId,
+        @WebParam(name = "rating", targetNamespace = "")
+        int rating);
+
+    /**
+     * 
+     * @param rating
+     * @param userId
+     * @return
+     *     returns java.util.List<soap.ws.skiresortitem.SkiResortItem>
+     */
+    @WebMethod
+    @WebResult(targetNamespace = "")
+    @RequestWrapper(localName = "getEvaluatedItemsWithRating", targetNamespace = "http://skiresortitem.ws.soap/", className = "soap.ws.skiresortitem.GetEvaluatedItemsWithRating")
+    @ResponseWrapper(localName = "getEvaluatedItemsWithRatingResponse", targetNamespace = "http://skiresortitem.ws.soap/", className = "soap.ws.skiresortitem.GetEvaluatedItemsWithRatingResponse")
+    @Action(input = "http://skiresortitem.ws.soap/ISkiResortItemService/getEvaluatedItemsWithRatingRequest", output = "http://skiresortitem.ws.soap/ISkiResortItemService/getEvaluatedItemsWithRatingResponse")
+    public List<SkiResortItem> getEvaluatedItemsWithRating(
+        @WebParam(name = "userId", targetNamespace = "")
+        String userId,
+        @WebParam(name = "rating", targetNamespace = "")
+        int rating);
 
 }

@@ -24,8 +24,10 @@ import javax.xml.namespace.QName;
 @XmlRegistry
 public class ObjectFactory {
 
+    private final static QName _GetBotUserByIdResponse_QNAME = new QName("http://botuser.ws.soap/", "getBotUserByIdResponse");
     private final static QName _SetPreferences_QNAME = new QName("http://botuser.ws.soap/", "setPreferences");
     private final static QName _CreateBotUserResponse_QNAME = new QName("http://botuser.ws.soap/", "createBotUserResponse");
+    private final static QName _GetBotUserById_QNAME = new QName("http://botuser.ws.soap/", "getBotUserById");
     private final static QName _SetPreferencesResponse_QNAME = new QName("http://botuser.ws.soap/", "setPreferencesResponse");
     private final static QName _CreateBotUser_QNAME = new QName("http://botuser.ws.soap/", "createBotUser");
     private final static QName _ApiException_QNAME = new QName("http://botuser.ws.soap/", "ApiException");
@@ -46,11 +48,27 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link GetBotUserByIdResponse }
+     * 
+     */
+    public GetBotUserByIdResponse createGetBotUserByIdResponse() {
+        return new GetBotUserByIdResponse();
+    }
+
+    /**
      * Create an instance of {@link CreateBotUserResponse }
      * 
      */
     public CreateBotUserResponse createCreateBotUserResponse() {
         return new CreateBotUserResponse();
+    }
+
+    /**
+     * Create an instance of {@link GetBotUserById }
+     * 
+     */
+    public GetBotUserById createGetBotUserById() {
+        return new GetBotUserById();
     }
 
     /**
@@ -86,6 +104,15 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link GetBotUserByIdResponse }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://botuser.ws.soap/", name = "getBotUserByIdResponse")
+    public JAXBElement<GetBotUserByIdResponse> createGetBotUserByIdResponse(GetBotUserByIdResponse value) {
+        return new JAXBElement<GetBotUserByIdResponse>(_GetBotUserByIdResponse_QNAME, GetBotUserByIdResponse.class, null, value);
+    }
+
+    /**
      * Create an instance of {@link JAXBElement }{@code <}{@link SetPreferences }{@code >}}
      * 
      */
@@ -101,6 +128,15 @@ public class ObjectFactory {
     @XmlElementDecl(namespace = "http://botuser.ws.soap/", name = "createBotUserResponse")
     public JAXBElement<CreateBotUserResponse> createCreateBotUserResponse(CreateBotUserResponse value) {
         return new JAXBElement<CreateBotUserResponse>(_CreateBotUserResponse_QNAME, CreateBotUserResponse.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link GetBotUserById }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://botuser.ws.soap/", name = "getBotUserById")
+    public JAXBElement<GetBotUserById> createGetBotUserById(GetBotUserById value) {
+        return new JAXBElement<GetBotUserById>(_GetBotUserById_QNAME, GetBotUserById.class, null, value);
     }
 
     /**
