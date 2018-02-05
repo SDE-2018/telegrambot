@@ -5,10 +5,11 @@ import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 
-import javax.validation.constraints.AssertTrue;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
@@ -20,20 +21,13 @@ import javax.xml.ws.Service;
 
 import org.glassfish.jersey.client.ClientConfig;
 import org.json.JSONArray;
-import org.json.JSONObject;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
-import org.telegram.telegrambots.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.api.objects.Update;
 import org.telegram.telegrambots.api.objects.replykeyboard.InlineKeyboardMarkup;
-import org.telegram.telegrambots.api.objects.replykeyboard.ReplyKeyboard;
 import org.telegram.telegrambots.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import soap.ws.skiresortitem.SkiResortItem;
-import soap.ws.skiresortitem.SkiResortItemService;
-import soap.ws.botuser.IBotUserService;
-import soap.ws.skiresortitem.ApiException_Exception;
+import util.SkiItemUtil;
 import soap.ws.skiresortitem.ISkiResortItemService;
 
 /**
@@ -45,12 +39,7 @@ public class RecommendFlow extends AbstractFlow {
 
 	private static Logger logger = Logger.getLogger(RecommendFlow.class.getName());
 	
-	// TODO: add REST service to send POST requests to get recommendations
-	// TODO: create util package and 
-//	private SkiResortItem resortItem;
-	
-//	private ISkiResortItemService skiResortService;
-	
+	// TODO: move it to backend logic recommendation service
 	private WebTarget service;
 	
 	/**
@@ -58,11 +47,21 @@ public class RecommendFlow extends AbstractFlow {
 	 */
     private int nRecommendations = 3;
 	
-    private ISkiResortItemService skiResortService;
+	private ISkiResortItemService skiResortService;
+    
     /**
      * Number of the processed recommendations at the moment.
      */
     private int nEvaluated = 0;
+    
+    /**
+     * List containing evaluations and ids of items already have been evaluated by user.
+     * This to prevent a behavior, when a user evaluates the same item
+     * multiple times. Also it helps to control
+     * if user call /stop after he evaluated some items, it will not
+     * send the evaluation of those items.
+     */    
+    private List<List<String>> evaluations = new ArrayList<>();
     
     private static URI getRecommendationServiceURI() {
          return UriBuilder.fromUri(
@@ -90,8 +89,8 @@ public class RecommendFlow extends AbstractFlow {
 				e.printStackTrace();
 			}
         QName qname = new QName("http://skiresortitem.ws.soap/", "SkiResortItemService"); 
-        Service service = Service.create(url, qname);
-        skiResortService = service.getPort(ISkiResortItemService.class);
+        Service resortService = Service.create(url, qname);
+        skiResortService = resortService.getPort(ISkiResortItemService.class);
         logger.info("Recommend flow initialized");
 	}
 
@@ -121,21 +120,15 @@ public class RecommendFlow extends AbstractFlow {
         	String resortId = o.toString();
         	logger.info("Resort id: " + resortId);
         	SkiResortItem item = null;
-        	// get skiresortitem entities by id
-	        try {
-				item = skiResortService.getSkiResortItem(resortId);
-				msg.setText(item.toString());
-				nValidRecommendations += 1;
-			} catch (ApiException_Exception e) {
-				e.printStackTrace();
-				logger.info("error retrieving ski item with id " + resortId);
-				// skip this failed recommendation
-				continue;
-			} 
-        	// add evaluation 5 stars reply markup
-        	msg.setReplyMarkup(getEvaluationReplyMarkup(resortId,
-        											Long.toString(chatId)));
-        	result.add(msg);
+        	item = skiResortService.getSkiResortItem(resortId);
+        	if (item != null) {
+				msg.setText(SkiItemUtil.getSkiResortItemAsString(item, true));
+				nValidRecommendations += 1; 
+	        	// add evaluation 5 stars reply markup
+	        	msg.setReplyMarkup(getEvaluationReplyMarkup(resortId,
+	        											Long.toString(chatId)));
+	        	result.add(msg);
+        	} 
         }
         if (nValidRecommendations == 0) {
         	SendMessage msg = new SendMessage().setChatId(chatId)
@@ -145,7 +138,7 @@ public class RecommendFlow extends AbstractFlow {
         } else {
         	/**
         	 *  The logic here is that in case we retrieved less then default
-        	 *  number should be retrieved, then we set this counter in order to 
+        	 *  number should be retrieved, then we check this counter in order to 
         	 *  properly process responses for these recommendations.
         	 */
         	
@@ -179,13 +172,21 @@ public class RecommendFlow extends AbstractFlow {
 		 
 		return markupInline;
 	}
-
+	
+	public static <T> boolean hasDuplicate(Iterable<T> all) {
+	    Set<T> set = new HashSet<T>();
+	    // Set#add returns false if the set does not change, which
+	    // indicates that a duplicate element has been added.
+	    for (T each: all) if (!set.add(each)) return true;
+	    return false;
+	}
 
 	/**
 	 * Evaluates the given recommendations.
 	 */
 	@Override
 	public SendMessage continueFlow(Update updates) {
+		this.currentStep += 1;
 		SendMessage msg = new SendMessage().setChatId(this.chatId);
 		msg.setText(DialogManager.SKIP);
 		
@@ -193,25 +194,55 @@ public class RecommendFlow extends AbstractFlow {
 		// 0 - resortId
 		// 1 - chatId (don't need, but in case)
 		// 2 - rating in stars from 1 to 5
-		List<String> evaluation = Arrays.asList(updates.getCallbackQuery().getData().split(","));
+		List<String> evaluation = Arrays.asList(
+						updates.getCallbackQuery().getData().split(","));
 		
 		// check we get from the right chat :)
 		assert(evaluation.get(1).equals(Long.toString(this.chatId)));
-		
+		evaluations.add(evaluation);
 		logger.info(evaluation.toString());
 		for (String s: evaluation) {
 			logger.info(s);
 		}
-		// update via soap the rating
-		
-		nEvaluated += 1;
-		
-		// check if we processed all evaluations
-		if (nEvaluated == nRecommendations) {
+
+		// check how many response callbacks we received
+		if (this.currentStep == nRecommendations) { // if all
+			String res = "Thank you for your responses!\n";
 			this.isFinished = true;
-			msg.setText("Thank you for your responses!");
+			
+			// if user evaluated twice - discard
+			if (hasDuplicate(evaluations)) {
+				res = "Hmm, I got confused... Could you, please, start over?";
+				this.isFinished = true;
+				msg.setText(res);
+				return msg;
+			}
+			// update via soap the ratings
+			for (List<String> e: evaluations) {
+				if (skiResortService.addSkiItemRating(
+						e.get(1), e.get(0),
+						Integer.parseInt(e.get(2)))){
+					nEvaluated += 1;
+				}
+			}
+			// check if we processed all evaluations
+			if (nEvaluated == nRecommendations) {
+				res += "I put down everything to my notes ;)\n";		
+			} else {
+				res += "Ouch, I lost my pen, couldn't record your responses..:(((";
+			}
+			msg.setText(res);
 		}
 		return msg;
 	}
 
+    public int getnRecommendations() {
+		return nRecommendations;
+	}
+
+
+	public void setnRecommendations(int nRecommendations) {
+		this.nRecommendations = nRecommendations;
+	}
+	
 }
