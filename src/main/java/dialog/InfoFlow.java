@@ -88,8 +88,10 @@ public class InfoFlow extends AbstractFlow {
 		
 		// if user is not registered yet
 		if (user == null) {
+			this.isFinished = true;
 			SendMessage msg = new SendMessage().setChatId(chatId)
-						.setText("Please, follow /start firstly!");
+						.setText("Seems I have connection problem..or your data is lost:))\n"
+								+ "In case you are new here, please, follow /start firstly!");
 			result.add(msg);
 			return result;
         }
