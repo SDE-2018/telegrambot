@@ -170,14 +170,15 @@ public class PreferencesFlow extends AbstractFlow {
 			user.setNearTrento(isClose);
 			try {
 				userService.setPreferences(user);
-				resultText += "Great, thank you very much for responses!. And yep,";
+				resultText += "Great, thank you very much for responses!";
 						
 			} catch (ApiException_Exception e) {
 				logger.info(e.getMessage());
 				resultText += "Ooops, something went wrong :(\n Anyway, ";
 				e.printStackTrace();
 			}
-			resultText += "I might have something you might be interested in";
+			resultText += "Type /recommend to get your first recommendations!";
+//			resultText += "I might have something you might be interested in";
 			
 			logger.info("dialog finished.");
 			this.isFinished = true;
