@@ -40,7 +40,6 @@ public class ServiceProvider {
 			"https://iss-chernukha.herokuapp.com/skiresort?wsdl";
 	
 	private static String recommendationServiceURL = 
-//			"http://localhost:5901/";
 			"https://rfs-chernukha.herokuapp.com/";
 	
 	/**
@@ -55,7 +54,6 @@ public class ServiceProvider {
 		URL url = null;
 		try {
 			url = new URL(botUserServiceURL);
-//			url = new URL("http://localhost:9090/botuser?wsdl");
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 			logger.info("error accessing " + botUserServiceURL);
@@ -81,7 +79,6 @@ public class ServiceProvider {
 	     URL url = null;
 			try {
 				url = new URL(skiResortServiceURL);
-//				url = new URL("http://localhost:9093/skiresort?wsdl");
 			} catch (MalformedURLException e) {
 				e.printStackTrace();
 				logger.info("error accessing " + skiResortServiceURL );

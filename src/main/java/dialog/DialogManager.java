@@ -22,13 +22,14 @@ import soap.ws.botuser.BotUser;
  * Should take care of the current global state (switching topics etc).
  * 
  * List of supported flows:
- *  /start 		  | DONE
- *  /preferences  | DONE
- *  /help		  | DONE
- *  /stop		  | DONE
- *  /recommend	  | DONE 
- *  /info 		  | DONE
- * ----------
+ * <ol>
+ * <li>/start</li>
+ * <li>/preferences</li>
+ * <li>/help</li>		 
+ * <li>/stop</li>		 
+ * <li>/recommend</li>	  
+ * <li>/info</li> 	
+ * </ol>	  
  *  
  * TO BE DONE:
  * 5. /forget

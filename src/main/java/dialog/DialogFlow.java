@@ -12,7 +12,7 @@ import org.telegram.telegrambots.api.objects.Update;
  * a certain behavior.
  * 
  * The chat bot logic can be very easily extended in the following way.
- * Extend <code>AbstractFlow<code> and implement methods defined in this
+ * Extend <code>AbstractFlow</code> and implement methods defined in this
  * interface.
  * 
  * @author ivan
