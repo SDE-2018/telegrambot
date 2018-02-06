@@ -96,6 +96,7 @@ public class RecommendFlow extends AbstractFlow {
 	        	result.add(msg);
         	} 
         }
+        
         if (nValidRecommendations == 0) {
         	SendMessage msg = new SendMessage().setChatId(chatId)
         						.setText("I'm sorry, I have a bad and cannot"
@@ -109,6 +110,10 @@ public class RecommendFlow extends AbstractFlow {
         	 */
         	
         	nRecommendations = nValidRecommendations;
+        	
+        	// add reminder to evaluate all of them
+            result.add(new SendMessage().setChatId(chatId).setText(
+            					"Check out all resorts, please!"));
         }
         return result;
 		} catch(Exception e) {
