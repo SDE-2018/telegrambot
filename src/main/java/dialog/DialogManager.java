@@ -23,20 +23,19 @@ import soap.ws.botuser.BotUser;
  * 
  * List of supported flows:
  *  /start 		  | DONE
- *  /preferences  | TODO ???: add the first recommendation in the end of the flow
- *  /help		  | IN PROGRESS
+ *  /preferences  | DONE
+ *  /help		  | DONE
  *  /stop		  | DONE
- *  /recommend	  | IN PROGRESS ?
- *  /info 		  | IN PROGRESS
+ *  /recommend	  | DONE 
+ *  /info 		  | DONE
  * ----------
  *  
- * 
+ * TO BE DONE:
  * 5. /forget
  * 7. /search_resort
  * 8. /add_resort
  * 9. /update_resort
  * 10./remove_resort
- * 11. /info 
  * 
  * @author ivan
  *

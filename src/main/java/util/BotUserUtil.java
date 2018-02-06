@@ -4,6 +4,11 @@ import soap.ws.botuser.BotUser;
 
 public class BotUserUtil {
 
+	/**
+	 * Get user profile as html text for message output.
+	 * @param u
+	 * @return
+	 */
 	public static String getUserAsString(BotUser u) {
 		String res = "";
 		if (u.getName() != null) {

@@ -17,6 +17,8 @@ import util.SkiItemUtil;
 
 
 /**
+ * This flow presents information about user. It lists his/her preferences
+ * and evaluated resorts with rating equal to 5 stars.
  * 
  * @author ivan
  *
@@ -37,6 +39,9 @@ public class InfoFlow extends AbstractFlow {
 	
 	private static int nItemsDisplay = 3;
 	
+	/**
+	 * Number of items left to be displayed after initial query.
+	 */
 	private int toShowMoreItems = 0;
 	
 	public InfoFlow(long chatId) {
@@ -53,7 +58,8 @@ public class InfoFlow extends AbstractFlow {
 	}
 
 	/**
-	 * 
+	 * Get user profile and maximum top-3 resorts with 
+	 * rating equal to 5 stars.
 	 */
 	@Override
 	public List<SendMessage> initFlow() {

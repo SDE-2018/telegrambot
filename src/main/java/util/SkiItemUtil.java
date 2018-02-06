@@ -4,7 +4,11 @@ import soap.ws.skiresortitem.SkiResortItem;
 
 public class SkiItemUtil {
 
-	
+	/**
+	 * Get item as html for message output.
+	 * @param displayMap if true include ski resort image map url
+	 * @return
+	 */
 	public static String getSkiResortItemAsString(SkiResortItem i, boolean displayMap) {
 		String res = "";
 		res += "<b>" + i.getName() + "</b>\n"; // name

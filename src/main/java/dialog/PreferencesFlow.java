@@ -1,18 +1,13 @@
 package dialog;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
-import javax.xml.namespace.QName;
-import javax.xml.ws.Service;
 
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Update;
-import org.telegram.telegrambots.api.objects.inlinequery.InlineQuery;
 import org.telegram.telegrambots.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
@@ -23,8 +18,6 @@ import soap.ws.botuser.IBotUserService;
 
 
 /**
- * TODO: send the first recommendation (pass control to recommendation flow?)
- * 
  * PreferencesFlow manages the dialog flow of the command '/preferences'.
  * The flow looks like this:
  * Init: 
@@ -42,8 +35,6 @@ import soap.ws.botuser.IBotUserService;
  * 			Will display a keyboard with two options:
  * 			- Yes
  * 			- Not important
- * 
- * After the last question - sends the first recommendation to the user.
  * 
  * @author ivan
  *

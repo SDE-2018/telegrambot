@@ -22,6 +22,8 @@ import util.SkiItemUtil;
 import soap.ws.skiresortitem.ISkiResortItemService;
 
 /**
+ * Recommends to the user 3 items (ski resorts).
+ * After display waits for user evaluation of all items.
  * 
  * @author ivan
  *
