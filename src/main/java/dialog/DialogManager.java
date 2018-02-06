@@ -13,9 +13,6 @@ import soap.ws.botuser.BotUser;
 
 
 /**
- * TODO: forbid /preferences to happen before /start
- * TOOD: forbid /recommend to occur before /start
- * 
  * Manages inputs from users and passes the control to dialog flows.
  * Flow is a sequence of user interactions, that starts with a command
  * from the list <code>supportedCommands</code>.

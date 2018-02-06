@@ -117,7 +117,8 @@ public class InfoFlow extends AbstractFlow {
 	public SendMessage continueFlow(Update updates) {
 		SendMessage allItems = new SendMessage().setChatId(chatId).enableHtml(true);
 		String text = "";
-		if (updates.getMessage().getText().equals("yes")) {
+		String answer = updates.getMessage().getText().toLowerCase();
+		if (answer.equals("yes")) {
 		    for (int i = nItemsDisplay; i < userItems.size(); i++) {
 				SkiResortItem item = userItems.get(i);
 				text += SkiItemUtil.getSkiResortItemAsString(item, false);
