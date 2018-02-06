@@ -17,7 +17,7 @@ import javax.xml.ws.WebServiceFeature;
  * Generated source version: 2.2
  * 
  */
-@WebServiceClient(name = "BotUserService", targetNamespace = "http://botuser.ws.soap/", wsdlLocation = "http://localhost:9090/botuser?wsdl")
+@WebServiceClient(name = "BotUserService", targetNamespace = "http://botuser.ws.soap/", wsdlLocation = "https://buss-chernukha.herokuapp.com/botuser?wsdl")
 public class BotUserService
     extends Service
 {
@@ -30,7 +30,7 @@ public class BotUserService
         URL url = null;
         WebServiceException e = null;
         try {
-            url = new URL("http://localhost:9090/botuser?wsdl");
+            url = new URL("https://buss-chernukha.herokuapp.com/botuser?wsdl");
         } catch (MalformedURLException ex) {
             e = new WebServiceException(ex);
         }

@@ -33,26 +33,6 @@ public interface IBotUserService {
      * @throws ApiException_Exception
      */
     @WebMethod
-    @WebResult(name = "createdBotUser", targetNamespace = "")
-    @RequestWrapper(localName = "createBotUser", targetNamespace = "http://botuser.ws.soap/", className = "soap.ws.botuser.CreateBotUser")
-    @ResponseWrapper(localName = "createBotUserResponse", targetNamespace = "http://botuser.ws.soap/", className = "soap.ws.botuser.CreateBotUserResponse")
-    @Action(input = "http://botuser.ws.soap/IBotUserService/createBotUserRequest", output = "http://botuser.ws.soap/IBotUserService/createBotUserResponse", fault = {
-        @FaultAction(className = ApiException_Exception.class, value = "http://botuser.ws.soap/IBotUserService/createBotUser/Fault/ApiException")
-    })
-    public boolean createBotUser(
-        @WebParam(name = "user", targetNamespace = "")
-        BotUser user)
-        throws ApiException_Exception
-    ;
-
-    /**
-     * 
-     * @param user
-     * @return
-     *     returns boolean
-     * @throws ApiException_Exception
-     */
-    @WebMethod
     @WebResult(name = "updatedBotUser", targetNamespace = "")
     @RequestWrapper(localName = "setPreferences", targetNamespace = "http://botuser.ws.soap/", className = "soap.ws.botuser.SetPreferences")
     @ResponseWrapper(localName = "setPreferencesResponse", targetNamespace = "http://botuser.ws.soap/", className = "soap.ws.botuser.SetPreferencesResponse")
@@ -79,5 +59,25 @@ public interface IBotUserService {
     public BotUser getBotUserById(
         @WebParam(name = "userId", targetNamespace = "")
         String userId);
+
+    /**
+     * 
+     * @param user
+     * @return
+     *     returns boolean
+     * @throws ApiException_Exception
+     */
+    @WebMethod
+    @WebResult(name = "createdBotUser", targetNamespace = "")
+    @RequestWrapper(localName = "createBotUser", targetNamespace = "http://botuser.ws.soap/", className = "soap.ws.botuser.CreateBotUser")
+    @ResponseWrapper(localName = "createBotUserResponse", targetNamespace = "http://botuser.ws.soap/", className = "soap.ws.botuser.CreateBotUserResponse")
+    @Action(input = "http://botuser.ws.soap/IBotUserService/createBotUserRequest", output = "http://botuser.ws.soap/IBotUserService/createBotUserResponse", fault = {
+        @FaultAction(className = ApiException_Exception.class, value = "http://botuser.ws.soap/IBotUserService/createBotUser/Fault/ApiException")
+    })
+    public boolean createBotUser(
+        @WebParam(name = "user", targetNamespace = "")
+        BotUser user)
+        throws ApiException_Exception
+    ;
 
 }

@@ -17,7 +17,7 @@ import javax.xml.ws.WebServiceFeature;
  * Generated source version: 2.2
  * 
  */
-@WebServiceClient(name = "SkiResortItemService", targetNamespace = "http://skiresortitem.ws.soap/", wsdlLocation = "http://localhost:9093/skiresort?wsdl")
+@WebServiceClient(name = "SkiResortItemService", targetNamespace = "http://skiresortitem.ws.soap/", wsdlLocation = "https://iss-chernukha.herokuapp.com/skiresort?wsdl")
 public class SkiResortItemService
     extends Service
 {
@@ -30,7 +30,7 @@ public class SkiResortItemService
         URL url = null;
         WebServiceException e = null;
         try {
-            url = new URL("http://localhost:9093/skiresort?wsdl");
+            url = new URL("https://iss-chernukha.herokuapp.com/skiresort?wsdl");
         } catch (MalformedURLException ex) {
             e = new WebServiceException(ex);
         }
