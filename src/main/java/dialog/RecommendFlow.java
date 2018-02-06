@@ -1,8 +1,5 @@
 package dialog;
 
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -10,22 +7,16 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriBuilder;
-import javax.xml.namespace.QName;
-import javax.xml.ws.Service;
-
-import org.glassfish.jersey.client.ClientConfig;
 import org.json.JSONArray;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Update;
 import org.telegram.telegrambots.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
+import dialog.connection.ServiceProvider;
 import soap.ws.skiresortitem.SkiResortItem;
 import util.SkiItemUtil;
 import soap.ws.skiresortitem.ISkiResortItemService;
@@ -39,16 +30,15 @@ public class RecommendFlow extends AbstractFlow {
 
 	private static Logger logger = Logger.getLogger(RecommendFlow.class.getName());
 	
-	// TODO: move it to backend logic recommendation service
-	private WebTarget service;
+	private WebTarget recService;
 	
+	private ISkiResortItemService skiResortService;
+    
 	/**
 	 * Default number of recommendations to propose for a user.
 	 */
     private int nRecommendations = 3;
 	
-	private ISkiResortItemService skiResortService;
-    
     /**
      * Number of the processed recommendations at the moment.
      */
@@ -62,35 +52,12 @@ public class RecommendFlow extends AbstractFlow {
      * send the evaluation of those items.
      */    
     private List<List<String>> evaluations = new ArrayList<>();
-    
-    private static URI getRecommendationServiceURI() {
-         return UriBuilder.fromUri(
-                 "http://localhost:5901/"
-//         		"http://assignment2-chernukha.herokuapp.com/"
-         		).build();
-     }
 	        
 	
 	public RecommendFlow(long chatId) {
 		super(chatId);
-		// recommendation service
-		 ClientConfig clientConfig = new ClientConfig();
-	     Client client = ClientBuilder.newClient(clientConfig);
-	     service = client.target(getRecommendationServiceURI());
-	     
-	     logger.info("Recommendation server address: " + 
-	    		 				getRecommendationServiceURI().toString() ); 
-	     // ski resort item storage service
-	     URL url = null;
-			try {
-//				URL url = new URL("https://assignment3-chernukha.herokuapp.com/people?wsdl");
-				url = new URL("http://localhost:9093/skiresort?wsdl");
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-			}
-        QName qname = new QName("http://skiresortitem.ws.soap/", "SkiResortItemService"); 
-        Service resortService = Service.create(url, qname);
-        skiResortService = resortService.getPort(ISkiResortItemService.class);
+		recService = ServiceProvider.getOrCreateRecommendationService();
+	    skiResortService = ServiceProvider.getOrCreateISkiResortItemService();
         logger.info("Recommend flow initialized");
 	}
 
@@ -99,14 +66,13 @@ public class RecommendFlow extends AbstractFlow {
 	 */
 	@Override
 	public List<SendMessage> initFlow() {
+		try {
 		List<SendMessage> result = new ArrayList<>();
 		// send rest request to get recommendation by user id
-		
-		// TODO: move this to logic layer!
 		// --------------------------
 		String path = "recommend/user/" + Long.toString(this.chatId)
 									+ "/" + Integer.toString(nRecommendations);
-		Response resp = service.path(path).request().accept(MediaType.APPLICATION_JSON)
+		Response resp = recService.path(path).request().accept(MediaType.APPLICATION_JSON)
         		.header("Content-type","application/json").get();
         String responseStr = resp.readEntity(String.class);
         logger.info(responseStr);
@@ -145,6 +111,11 @@ public class RecommendFlow extends AbstractFlow {
         	nRecommendations = nValidRecommendations;
         }
         return result;
+		} catch(Exception e) {
+			e.printStackTrace();
+			logger.info(e.getMessage());
+		}
+		return null;
 	}
 
 	

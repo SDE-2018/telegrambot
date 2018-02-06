@@ -44,6 +44,7 @@ public class TrentinoSkiBot extends TelegramLongPollingBot {
 	
 	
 	static {
+		/*
 		Properties properties = new Properties();
         try {
 			properties.load(new FileInputStream("local.properties"));
@@ -53,6 +54,9 @@ public class TrentinoSkiBot extends TelegramLongPollingBot {
 			e.printStackTrace();
 		}
         BOT_TOKEN = properties.getProperty("BOT_TOKEN");
+        */
+		
+        BOT_TOKEN = System.getenv("BOT_TOKEN");
 	}
 	
 	static {

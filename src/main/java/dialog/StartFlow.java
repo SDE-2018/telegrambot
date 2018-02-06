@@ -22,6 +22,7 @@ import javax.xml.ws.Service;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Update;
 
+import dialog.connection.ServiceProvider;
 import soap.ws.botuser.*;
 
 /**
@@ -50,19 +51,7 @@ public class StartFlow extends AbstractFlow{
 	public StartFlow(long chatId) {
 		super(chatId);
 		
-		URL url = null;
-		try {
-//			URL url = new URL("https://assignment3-chernukha.herokuapp.com/people?wsdl");
-			url = new URL("http://localhost:9090/botuser?wsdl");
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		}
-		
-        //1st argument service URI, refer to wsdl document above
-        //2nd argument is service name, refer to wsdl document above
-        QName qname = new QName("http://botuser.ws.soap/", "BotUserService"); 
-        Service service = Service.create(url, qname);
-        userService = service.getPort(IBotUserService.class);
+		userService = ServiceProvider.getOrCreateIBotUserService();
         
         user = new BotUser();
 		user.setChatId((int)this.chatId);

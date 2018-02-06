@@ -16,6 +16,7 @@ import org.telegram.telegrambots.api.objects.inlinequery.InlineQuery;
 import org.telegram.telegrambots.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
+import dialog.connection.ServiceProvider;
 import soap.ws.botuser.ApiException_Exception;
 import soap.ws.botuser.BotUser;
 import soap.ws.botuser.IBotUserService;
@@ -57,22 +58,8 @@ public class PreferencesFlow extends AbstractFlow {
 	
 	public PreferencesFlow(long chatId) {
 		super(chatId);
-		
-		URL url = null;
-		try {
-//			URL url = new URL("https://assignment3-chernukha.herokuapp.com/people?wsdl");
-			url = new URL("http://localhost:9090/botuser?wsdl");
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		}
-		
-        //1st argument service URI, refer to wsdl document above
-        //2nd argument is service name, refer to wsdl document above
-        QName qname = new QName("http://botuser.ws.soap/", "BotUserService"); 
-        Service service = Service.create(url, qname);
-        userService = service.getPort(IBotUserService.class);
-        
-        user = new BotUser();
+		userService = ServiceProvider.getOrCreateIBotUserService();
+		user = new BotUser();
         user.setChatId((int)chatId);
 	}
 

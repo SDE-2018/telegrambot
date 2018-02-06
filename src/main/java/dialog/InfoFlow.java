@@ -1,28 +1,22 @@
 package dialog;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import javax.xml.namespace.QName;
-import javax.xml.ws.Service;
-
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Update;
 
+import dialog.connection.ServiceProvider;
 import soap.ws.botuser.BotUser;
 import soap.ws.botuser.IBotUserService;
 import soap.ws.skiresortitem.ISkiResortItemService;
 import soap.ws.skiresortitem.SkiResortItem;
-import soap.ws.skiresortitem.SkiResortItemService;
 import util.BotUserUtil;
 import util.SkiItemUtil;
 
 
 /**
- * TODO: move service initialization to util package !
  * 
  * @author ivan
  *
@@ -48,40 +42,19 @@ public class InfoFlow extends AbstractFlow {
 	public InfoFlow(long chatId) {
 		super(chatId);
 		
-		// init user service
-		URL url = null;
-		try {
-//			URL url = new URL("https://assignment3-chernukha.herokuapp.com/people?wsdl");
-			url = new URL("http://localhost:9090/botuser?wsdl");
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		}
+		userService = ServiceProvider.getOrCreateIBotUserService();
 		
-        //1st argument service URI, refer to wsdl document above
-        //2nd argument is service name, refer to wsdl document above
-        QName qname = new QName("http://botuser.ws.soap/", "BotUserService"); 
-        Service service = Service.create(url, qname);
-        userService = service.getPort(IBotUserService.class);
-        logger.info("user service initialized!");
-
         // get user info
         user = userService.getBotUserById(Long.toString(chatId));
         
 		// init item service
-	     URL urlItem = null;
-		try {
-//				URL url = new URL("https://assignment3-chernukha.herokuapp.com/people?wsdl");
-			urlItem = new URL("http://localhost:9093/skiresort?wsdl");
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		}
-       QName qnameItem = new QName("http://skiresortitem.ws.soap/", "SkiResortItemService"); 
-       Service resortService = Service.create(urlItem, qnameItem);
-       skiResortService = resortService.getPort(ISkiResortItemService.class);
-       logger.info("item service initialized");
+        skiResortService = ServiceProvider.getOrCreateISkiResortItemService();
+        logger.info("info flow initialized");
 	}
 
-	// TODO
+	/**
+	 * 
+	 */
 	@Override
 	public List<SendMessage> initFlow() {
 		List<SendMessage> result = new ArrayList<>();
