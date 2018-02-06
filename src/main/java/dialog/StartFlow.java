@@ -122,6 +122,7 @@ public class StartFlow extends AbstractFlow{
 						+ "Now go ahead and navigate my other commands, search for ski resorts."
 						+ " However, I'd invite you to set"
 						+ " your preferences firstly.\n Just type '/preferences' :)");
+				DialogManager.userHasProfile.put(new Long(chatId), new Boolean(true));
 				logger.info("user created!");
 				}
 			} catch (ApiException_Exception e) {

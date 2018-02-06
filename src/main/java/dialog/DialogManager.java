@@ -9,6 +9,8 @@ import java.util.logging.Logger;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 import org.telegram.telegrambots.api.objects.Update;
 
+import soap.ws.botuser.BotUser;
+
 
 /**
  * TODO: forbid /preferences to happen before /start
@@ -84,6 +86,15 @@ public class DialogManager {
 			"/recommend",
 			"/info"
 	};
+	
+	/**
+	 * Package visible hashmap for stating if a user has created
+	 * the profile by running /start command. This is to prevent
+	 * user to call /recommend and /preferences command for unauthorized
+	 * people.
+	 */
+	static Map<Long, Boolean> userHasProfile = new HashMap<>();
+	
 	
 	/**
 	 * This text can be set to <code>SendMessage msg.setText(SKIP)</code>
@@ -182,6 +193,8 @@ public class DialogManager {
 		List<SendMessage> msgList = new ArrayList<>(); 
 		SendMessage msg = new SendMessage().setChatId(chatId);
 		logger.info(Long.toString(chatId) + " "  + command);
+		String noProfileText = "Sorry, I can't give you such valuable information...\n"
+						+ "please, follow /start firstly!)";
 		
 		if (command.equals("/help")) {
 			msg = help(chatId);
@@ -191,6 +204,11 @@ public class DialogManager {
 		
 		if (command.equals("/forget")) {
 			// TODO:
+			msg.setText("ups, don't support it yet, your data will be sold to"
+					+ "other companies, lol xD");
+			msgList.add(msg);
+			return msgList;
+			
 		}
 		
 		if (command.equals("/stop")) {
@@ -217,16 +235,28 @@ public class DialogManager {
 				msgList = start(chatId);
 				break;
 			case "/preferences":
-				msgList = preferences(chatId);
+				if (userHasProfile.get(chatId) != null) {
+					msgList = preferences(chatId);
+				} else {
+					msgList.add(msg.setText(noProfileText));
+				}
 				break;
 			case "/recommend":
-				msgList = recommend(chatId);
+				if (userHasProfile.get(chatId) != null) {
+					msgList = recommend(chatId);
+				} else {
+					msgList.add(msg.setText(noProfileText));
+				}
 				break;
 			case "/search_resort":
 				msgList = searchResort(chatId);
 				break;
 			case "/info":
-				msgList = info(chatId);
+				if (userHasProfile.get(chatId) != null) {
+					msgList = info(chatId);
+				} else {
+					msgList.add(msg.setText(noProfileText));
+				}
 				break;
 			default:
 				msg.setText("I'm sorry, didn't get you. Could you repeat, please?");
